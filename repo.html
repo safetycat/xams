@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Repository</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/abn_tree.css" rel="stylesheet">
+    <link href="css/xeditable.css" rel="stylesheet">
+    <link href="css/angular-motion.min.css" rel="stylesheet">
+
+    <!-- load angular and dependencies -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-animate.js"></script>
+    <script src="//code.angularjs.org/1.2.23/angular-sanitize.min.js" data-semver="1.2.23"></script>
+    <!-- load app -->
+    <script src="app/app.js"></script>
+
+    <!-- bootstrap js in an angular form -->
+    <script src="app/angular-strap/angular-strap.min.js"></script> 
+    <script src="app/angular-strap/angular-strap.tpl.min.js"></script>
+
+    <!-- load the tree component -->
+    <script src="app/questions-tree/questions-tree-controller.js"></script>
+    <script src="app/tree/abn_tree_directive.js"></script>
+    <script src="app/tree/tree-service.js"></script>
+
+    <!-- renamer component -->
+    <script src="app/renamer/renamer-controller.js"></script>
+    <script src="app/renamer/xeditable.js"></script>
+
+    <!-- question editor -->
+    <script src="app/question-editor/question-editor-controller.js"></script>
+
+
+    <style type="text/css">
+    html, body {
+        height: 100%;
+        margin: 0;
+        max-height: 100%;
+        min-height: 100%;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .col {
+      background-color: lightblue;
+      padding: 8px;
+      border: 2px solid darkgray;
+      height: 100%;
+      min-height: 100%;
+      overflow: auto;
+    }
+
+    .container-full-height {
+      height: 100%;
+      min-height: 100%;
+    }
+
+    .row {
+      height: 95%;
+      min-height: 95%;
+      margin-top: 16px;
+      background-color: lightgray;
+    }
+
+    .modal-backdrop.am-fade {
+      opacity: .5;
+      transition: opacity .15s linear;
+    }
+    
+    .modal-backdrop.am-fade .ng-enter {
+      opacity: 0;
+    }
+    
+    .modal-backdrop.am-fade .ng-enter.ng-enter-active {
+      opacity: .5;
+    }
+
+    .modal-backdrop.am-fade .ng-leave {
+      opacity: .5;
+    }
+    
+    .modal-backdrop.am-fade .ng-leave.ng-leave-active {
+      opacity: 0;
+    }
+
+    .modal-body {
+      color: #000;
+    }
+
+    .modal-header {
+      background-color: #000;
+    }
+
+    </style>
+  </head>
+  <body>
+    <div class="container container-full-height" ng-app="Repository">
+      <div class="row" ng-controller="QuestionsTreeController" >
+        <div class="col col-xs-4" id="tree-col">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              Questions  <!-- switch this attribute modal to using the service from the controller -->
+
+              <button 
+                class="btn btn-success btn-xs pull-right" 
+                ng-click="addFolder()" 
+                >
+                <i class="glyphicon glyphicon-folder-close"></i>&nbsp;&nbsp;New 
+              </button>
+
+              <button 
+                style="margin-right:5px" 
+                class="btn btn-danger btn-xs pull-right" 
+                ng-click="alert('deleting folder')" 
+                ng-show="isFolder()"
+                >
+                <i class="glyphicon glyphicon-folder-close"></i>&nbsp;&nbsp;Delete 
+              </button>
+            </div>
+            <div class="panel-body">
+  
+                      <div style="background:whitesmoke;border:1px solid lightgray;border-radius:5px;">
+                        <span ng-if="doing_async">...loading...</span>
+                        <abn-tree 
+                          tree-data="questions" 
+                          tree-control="questionsTree" 
+                          icon-leaf="glyphicon glyphicon-question-sign"
+                          initial-selection = "Practice Questions"
+                          on-select="selectHandler(branch)" 
+                          expand-level="3">
+                        </abn-tree>
+                      </div>
+
+            </div>
+          </div>
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              Assessments
+            </div>
+            <div class="panel-body">
+              This list displays the assessments
+            </div>
+          </div>
+
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              Qualifications
+            </div>
+            <div class="panel-body">
+              This list displays the qualifications.
+            </div>
+          </div>
+
+        </div>
+        <div class="col col-xs-8">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+                <button 
+                  class="btn btn-success btn-xs" 
+                  ng-click="addQuestion()" 
+                  ng-show="isFolder()"                  
+                  >
+                  <i class="glyphicon glyphicon-question-sign"></i>&nbsp;&nbsp;New Question
+              </button>
+              <button 
+                  class="btn btn-primary disabled btn-xs" 
+                  ng-hide="isFolder()"  
+                  ng-click="addQuestionDisabled()"                
+                  >
+                  <i class="glyphicon glyphicon-question-sign"></i>&nbsp;&nbsp;New Question
+              </button>
+            </div>
+            
+            <div class="panel-body">
+              <div ng-show="isFolder()" id="rename">
+                <h4><i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;Folder :</h4>
+                <div class="well">
+                  <div>
+                    <span editable-text="user.name" e-form="folderNameEditor" onbeforesave="renamer($data)">
+                      {{ output }}
+                    </span>
+                    <button 
+                      ng-click="folderNameEditor.$show()"
+                      ng-hide="folderNameEditor.$visible"
+                      class="btn btn-default"
+                      style="margin-left:10px">
+                      Rename
+                    </button>
+                  </div> <!-- end rename controller -->
+                </div>
+                <!-- {{ output }} -->
+              </div>
+
+              <div ng-hide="isFolder()" ng-controller="QuestionEditorController" id="questionEditor">
+                <ng-include src="'app/question-editor/questions-editor.html'"></ng-include>
+              </div>
+
+            </div>
+
+          </div>          
+        </div>
+      </div> <!-- end controller scope -->
+    </div>
+  </body>
+</html>
