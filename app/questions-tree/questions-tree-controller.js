@@ -22,6 +22,7 @@ app.controller(
     $http.get(dataUrl)
         .success(function(data){
             $scope.questions = data;
+//            $scope.questionsTree.select_branch($scope.questionsTree.get_first_branch());
         })
         .error(function(error){
             $scope.questions.error = error;
@@ -38,14 +39,14 @@ app.controller(
             $scope.question.text = data.text;
             $scope.question.quid = data.id;
             $scope.question.questionType.currentQuestionType = data.type;
-            console.dir($scope);
         })
         .error(function(error){
             // fail silent for now.
             //$scope.questions.error = error;
+            if($scope.question.questionType.currentQuestionType != 13) {
+                alert('This question has no data in this demo. \n\nPlease select from inside the Practice Questions / New Folder area\n\nand Practice Questions / New Folder / Task 1 area');
+            } 
             $scope.question.questionType.currentQuestionType = 0;
-            alert('This question has no data in this demo. \n\nPlease select from inside the Practice Questions / New Folder area\n\nand Practice Questions / New Folder / Task 1 area');
-            console.dir($scope);
         });
     };
 

@@ -34,6 +34,9 @@ app.factory("treeInterface",function() {
 
   // these functions (methods) attached to $scope define a public API
   // 'this' refers to $scope
+  treeInterface.get_selected_branch = function() {
+    return this.questionsTree.get_selected_branch();
+  }
 
   treeInterface.selectHandler = function(branch) {
     this.currentlySelectedBranch = branch;
@@ -90,8 +93,20 @@ app.factory("treeInterface",function() {
       b = this.questionsTree.get_parent_branch(b); // if so add folder to its parent
      }
      var newb = this.questionsTree.add_branch( b, { "label" : "New Question" } );
+
+
+
      this.questionsTree.select_branch(newb);
      this.questionsTree.expand_branch(newb);  
+
+
+    this.question.marks = 0;
+    this.question.options = [];
+    this.question.text = '';
+    this.question.quid = 0;
+    this.question.questionType.currentQuestionType = 13;
+
+
    };
 
    treeInterface.addQuestionDisabled = function() {

@@ -258,7 +258,9 @@
 
             scope.tree_rows = [];
 
-
+            if(tree.get_selected_branch() == undefined) { // hack
+              tree.select_branch((tree.get_first_branch()));
+            }
 
             for_each_branch(function(branch) {
               var child;

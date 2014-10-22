@@ -17,16 +17,41 @@ app.controller(
     $scope.question.questionType.ASCX_QUESTION     = 10;
     $scope.question.questionType.TABLE_QUESTION    = 11;
     $scope.question.questionType.PAPER_PART        = 12;
+    $scope.question.questionType.NEW               = 13;
 
     $scope.question.questionType.currentQuestionType = $scope.question.questionType.NONE;
 
     $scope.setQuestionType = function(questionType) {
       $scope.question.questionType.currentQuestionType = questionType
+      if($scope.question.answerText) {$scope.question.answerText = ''}
     };
 
     $scope.cancelQuestionType = function() {
       $scope.question.questionType.currentQuestionType = $scope.question.questionType.NONE;
     };
+
+    $scope.addAnswer = function(answerText) {
+      if(!angular.isArray($scope.question.options)) {$scope.question.options = []}
+      $scope.question.options.push({Score:0,Text:answerText});
+      $scope.question.answerText = '';
+    };
+
+    /**
+     * this associates the question with the menu item, does not save to server or anything
+     */
+    $scope.saveQuestion = function() {
+
+      // $scope.question.questionType.currentQuestionType;
+      // $scope.question.marks;
+      // $scope.question.options
+      // $scope.question.text
+      // $scope.question.quid
+
+
+      console.dir($scope.question);
+      //console.dir($scope.questionsTree.get_selected_branch());
+    };
+
 
     $scope.dropdown = [
       {
